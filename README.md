@@ -12,6 +12,7 @@ This program was developed according with Python's good practices and based on [
 * [CS50 Shirtificate Problem](https://cs50.harvard.edu/python/2022/psets/8/shirtificate/#cs50-shirtificate)
 * [fpdf2 Tutorial](https://py-pdf.github.io/fpdf2/Tutorial.html)
 * [fpdf2 API Documentation](https://py-pdf.github.io/fpdf2/fpdf/)
+* [Pillow](https://pillow.readthedocs.io/en/stable/)
 
 
 ## Getting Started
@@ -23,6 +24,7 @@ These instructions will guide you to copy the project from the repository and ru
 Things you need to have installed:
 * [Python](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
 * [fpdf2](https://pypi.org/project/fpdf2/)
+* [pillow 10.2.0](https://pypi.org/project/pillow/)
 
 ### Local Installation
 
@@ -33,7 +35,7 @@ $git clone [URL].git
 ```
 
 ### Run
-To run the project, first check that the fpdf2 library is installed, then run the python command.
+To run the project, first check that the fpdf2, pillow libraries is installed, then run the python command.
 ```
 $python shirtificate.py
 ```
