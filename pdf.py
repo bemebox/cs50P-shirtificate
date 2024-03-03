@@ -1,58 +1,87 @@
 from fpdf import FPDF
-from PIL import Image
-
+from fpdf.enums import XPos, YPos, Align
 
 class PDF(FPDF):
 
-    def add_title(self, title, font_size: int = 30, font_family="Helvetica"):
-        # set the font properties for the text that will be added to the PDF
+    _TOP_MARGIN = 20
+    DEFAULT_FONT_FAMILY = "Helvetica"
+    DEFAULT_FONT_SIZE = 12
+    WHITE_COLOR = (255, 255, 255)
+    BLACK_COLOR = (0, 0, 0)
+
+    def add_title(
+            self,
+            title_text="",
+            font_family=DEFAULT_FONT_FAMILY,
+            font_size: int=DEFAULT_FONT_SIZE
+    ):
+
+        # set the font proprties for the text that will be added to PDF page
         self.set_font(font_family, size=font_size)
+        self.set_text_color(self.BLACK_COLOR)
 
-        # calculate the width of the title text
-        title_width = self.get_string_width(title)
+        # get the title text width to be horizontally centered
+        title_text_width = self.get_string_width(title_text)
 
-        # calculate the position to horizontally center the text
-        x_position = (self.w - title_width) / 2
+        # calculate the x position to set text horizontally center to the PDF page
+        x_position = (self.w - title_text_width) / 2
+        y_position = self.t_margin + self._TOP_MARGIN
 
-        # set position and add the title text
+        # set the text title position and add it to the PDF page
+        self.set_y(y_position)
         self.set_x(x_position)
-        self.cell(title_width, 57, title, ln=True, align="C")
+        self.cell(
+            w=title_text_width,
+            text=title_text,
+            new_x=XPos.LMARGIN,
+            new_y=YPos.NEXT,
+            align=Align.C
+        )
 
     def add_image_with_text(
-        self, image_path, text, font_size: int = 30, font_family="Helvetica"
+            self,
+            image_path="",
+            image_text="",
+            font_family=DEFAULT_FONT_FAMILY,
+            font_size: int= DEFAULT_FONT_SIZE
     ):
-        # Calculate the center position for the image
-        page_width = self.w - 2 * self.l_margin
-        image_width = 0  # The width will be determined later
 
-        # Get the size of the image
-        with Image.open(image_path) as img:
-            image_w, image_h = img.size
-        aspect_ratio = image_w / image_h
+        # calculate image position
+        x_image_position = self.l_margin
+        y_image_position = self.get_y() + self._TOP_MARGIN + 3
 
-        # Calculate the maximum width and height based on the page width and height
-        max_width = page_width
-        max_height = max_width / aspect_ratio
+        # calculate image width size to fit in the PDF page
+        page_width = self.w - (2 * self.l_margin)
 
-        # Adjust the image width and height if it exceeds the available space
-        if max_height > self.h - 2 * self.t_margin:
-            max_height = self.h - 2 * self.t_margin
-            max_width = max_height * aspect_ratio
+        # add image to the PDF page
+        self.image(
+            x=x_image_position,
+            y=y_image_position,
+            name=image_path,
+            w=page_width
+        )
 
-        image_width = max_width
+        # set PDF Y position equal to the image Y position
+        self.set_y(y_image_position)
 
-        # Calculate the center position for the image
-        x_position = (page_width - image_width) / 2 + self.l_margin
-
-        # Add the image to the PDF
-        self.image(image_path, x_position, 70, w=image_width)
-
-        # Set font for the text
+        # set the text font properties
         self.set_font(font_family, size=font_size)
-        self.set_text_color((255, 255, 255))
+        self.set_text_color(self.WHITE_COLOR)
 
-        # Add text in front of the image
-        self.multi_cell(page_width, 138, text, align="C")
+        # get the text width to be horizontally centered
+        text_width = self.get_string_width(image_text)
 
-        # Restore text color to black (default)
-        self.set_text_color(0, 0, 0)
+        # calculate text position
+        x_text_position = (self.w - text_width) / 2
+        y_text_position = self.get_y() + 62
+
+        # set text position and add it to the PDF page
+        self.set_y(y_text_position)
+        self.set_x(x_text_position)
+        self.cell(
+            w=text_width,
+            text=image_text,
+            new_x=XPos.LMARGIN,
+            new_y=YPos.NEXT,
+            align=Align.C
+        )
